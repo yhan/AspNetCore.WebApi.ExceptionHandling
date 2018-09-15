@@ -14,6 +14,7 @@ namespace AspNetCore.WebApi.ExceptionHandling.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            throw new InvalidOperationException("Sorry just a joke");
             return new string[] { "value1", "value2" };
         }
 

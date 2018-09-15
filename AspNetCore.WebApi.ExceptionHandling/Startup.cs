@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,44 +59,11 @@ namespace AspNetCore.WebApi.ExceptionHandling
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
 
             app.UseMvc();
         }
-    }
-
-    public static class ExceptionMiddlewareExtensions
-    {
-        public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILogger logger)
-        {
-            app.UseExceptionHandler(appError =>
-            {
-                appError.Run(async context =>
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    context.Response.ContentType = "application/json";
-
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
-                    {
-                        logger.LogError($"Something went wrong: {contextFeature.Error}");
-
-                        await context.Response.WriteAsync(new ErrorDetails
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = $"Internal Server Error: {contextFeature.Error}"
-                        }.ToString());
-                    }
-                });
-            });
-        }
-    }
-
-    public class ErrorDetails
-    {
-        public int StatusCode { get; set; }
-        public string Message { get; set; }
     }
 }
 
