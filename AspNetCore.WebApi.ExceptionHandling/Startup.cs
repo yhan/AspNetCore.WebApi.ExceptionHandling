@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
@@ -30,10 +26,11 @@ namespace AspNetCore.WebApi.ExceptionHandling
                 .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
                 {
                     MinimumLogEventLevel = LogEventLevel.Information,
-                    AutoRegisterTemplate = true
+                    AutoRegisterTemplate = true,
+                    IndexFormat = "test-{0:yyyy.MM}"
                 })
-                .WriteTo.Console(new JsonFormatter())
-                .WriteTo.Console(new CompactJsonFormatter())
+                //.WriteTo.Console(new JsonFormatter())
+                //.WriteTo.Console(new CompactJsonFormatter())
                 .CreateLogger();
         }
 

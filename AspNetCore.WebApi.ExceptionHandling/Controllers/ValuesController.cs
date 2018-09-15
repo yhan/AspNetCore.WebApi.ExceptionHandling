@@ -65,7 +65,10 @@ namespace AspNetCore.WebApi.ExceptionHandling.Controllers
         public async Task<OkObjectResult> Put(Guid aggregateId, MyCommand myCommand)
         {
             await Task.FromResult(0);
-            return new OkObjectResult(new {ask = myCommand, response = HttpStatusCode.OK});
+            var tryToLogThis = new {ask = myCommand, response = HttpStatusCode.OK};
+            Log.Information("{@tryToLogThis}", tryToLogThis);
+
+            return new OkObjectResult(tryToLogThis);
         }
         
         // PUT api/values/5
