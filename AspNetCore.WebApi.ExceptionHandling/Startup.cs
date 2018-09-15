@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +9,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.Elasticsearch;
 
 namespace AspNetCore.WebApi.ExceptionHandling
 {
@@ -16,6 +22,19 @@ namespace AspNetCore.WebApi.ExceptionHandling
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            // Create Serilog Elasticsearch logger
+            Serilog.Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Debug()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
+                {
+                    MinimumLogEventLevel = LogEventLevel.Information,
+                    AutoRegisterTemplate = true
+                })
+                .WriteTo.Console(new JsonFormatter())
+                .WriteTo.Console(new CompactJsonFormatter())
+                .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -25,31 +44,38 @@ namespace AspNetCore.WebApi.ExceptionHandling
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
             services.AddSwaggerGen(
                 swaggerGenOptions =>
                 {
                     var webApiDescription = @"";
                     swaggerGenOptions.SetDefaultOptionsWithXmlDocumentation(System.AppDomain.CurrentDomain.FriendlyName, "AM 10", "DIF-IT-LTAM10@lafrancaise-group.com", webApiDescription);
                 });
-
-            //services.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
             app.Use(next =>
             {
                 return async context =>
                 {
+                    //var responseBody = context.Response.Body;
+                    //responseBody.Write();
                     logger.LogInformation("Incoming request");
                     await next(context);
-                    logger.LogInformation("Outgoing response");
+                    logger.LogInformation($"Outgoing response: ");
                 };
             });
 
+            app.UseMiddleware<HttpRequestResponseLoggingMiddleware>();
+
             // Handling Errors Globally with the Custom Middleware 
-            app.ConfigureCustomExceptionMiddleware();
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // Handling Errors Globally with the Built-In Middleware
             //app.ConfigureExceptionHandler(logger);
