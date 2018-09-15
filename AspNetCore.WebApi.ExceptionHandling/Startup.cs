@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,6 @@ namespace AspNetCore.WebApi.ExceptionHandling
 {
     public class Startup
     {
-    
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -50,7 +48,11 @@ namespace AspNetCore.WebApi.ExceptionHandling
                 };
             });
 
-            app.ConfigureExceptionHandler(logger);
+            // Handling Errors Globally with the Custom Middleware 
+            app.ConfigureCustomExceptionMiddleware();
+
+            // Handling Errors Globally with the Built-In Middleware
+            //app.ConfigureExceptionHandler(logger);
 
             app.UseSwagger();
 
@@ -66,4 +68,3 @@ namespace AspNetCore.WebApi.ExceptionHandling
         }
     }
 }
-

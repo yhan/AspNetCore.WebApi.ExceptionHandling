@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace AspNetCore.WebApi.ExceptionHandling
 {
-    public static class ExceptionMiddlewareExtensions
+    public static class ExceptionHandlingExtensions
     {
         public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILogger logger)
         {
@@ -28,12 +28,16 @@ namespace AspNetCore.WebApi.ExceptionHandling
                             StatusCode = context.Response.StatusCode,
                             Message = $"Internal Server Error: {contextFeature.Error}"
                         };
-
-
+                        
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));
                     }
                 });
             });
+        }
+        
+        public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
         }
     }
 }
