@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.WebApi.ExceptionHandling", "AspNetCore.WebApi.ExceptionHandling\AspNetCore.WebApi.ExceptionHandling.csproj", "{CC030090-032A-44B2-91D2-D458ABED859B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC030090-032A-44B2-91D2-D458ABED859B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC030090-032A-44B2-91D2-D458ABED859B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC030090-032A-44B2-91D2-D458ABED859B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC030090-032A-44B2-91D2-D458ABED859B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1ED0FEE4-19AE-4D9B-ACA7-E8B1FBA84863}
+	EndGlobalSection
+EndGlobal
