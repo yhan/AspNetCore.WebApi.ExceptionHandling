@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.WebApi.ExceptionHandling", "AspNetCore.WebApi.ExceptionHandling\AspNetCore.WebApi.ExceptionHandling.csproj", "{CC030090-032A-44B2-91D2-D458ABED859B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.WebApi.ExceptionHandling", "AspNetCore.WebApi.ExceptionHandling\AspNetCore.WebApi.ExceptionHandling.csproj", "{CC030090-032A-44B2-91D2-D458ABED859B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{C37733C9-369C-4CC7-8E02-6B3D9CEC87EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{CC030090-032A-44B2-91D2-D458ABED859B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC030090-032A-44B2-91D2-D458ABED859B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC030090-032A-44B2-91D2-D458ABED859B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C37733C9-369C-4CC7-8E02-6B3D9CEC87EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C37733C9-369C-4CC7-8E02-6B3D9CEC87EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C37733C9-369C-4CC7-8E02-6B3D9CEC87EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C37733C9-369C-4CC7-8E02-6B3D9CEC87EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

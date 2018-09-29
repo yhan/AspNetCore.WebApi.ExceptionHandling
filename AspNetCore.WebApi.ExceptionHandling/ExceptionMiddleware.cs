@@ -1,17 +1,22 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Serilog;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-
-namespace AspNetCore.WebApi.ExceptionHandling
+﻿namespace AspNetCore.WebApi.ExceptionHandling
 {
+    using System;
+    using System.Net;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+
+    using Newtonsoft.Json;
+
+    using Serilog;
+
+    using ILogger = Microsoft.Extensions.Logging.ILogger;
+
     public class ExceptionMiddleware
     {
         private readonly ILogger _logger;
+
         private readonly RequestDelegate _next;
 
         public ExceptionMiddleware(RequestDelegate next, ILogger<Startup> logger)
@@ -36,14 +41,14 @@ namespace AspNetCore.WebApi.ExceptionHandling
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var errorDetails = new ErrorDetails
-            {
-                StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error from the custom middleware.",
-                Exception = exception
-            };
+                                   {
+                                       StatusCode = context.Response.StatusCode,
+                                       Message = "Internal Server Error from the custom middleware.",
+                                       Exception = exception
+                                   };
 
             Log.Error("{@Error}", errorDetails);
             return context.Response.WriteAsync(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));

@@ -1,36 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-
-namespace AspNetCore.WebApi.ExceptionHandling.Controllers
+﻿namespace AspNetCore.WebApi.ExceptionHandling.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Net;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using Newtonsoft.Json;
+
+    using Serilog;
+
     class Hello
     {
-        public int Id { get; set; }
-        public string Content { get; set; }
-
         public Hello(int id, string content)
         {
             Id = id;
             Content = content;
         }
+
+        public string Content { get; set; }
+
+        public int Id { get; set; }
     }
 
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        public ValuesController()
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
         {
-            
         }
 
         // GET api/values
@@ -38,7 +40,7 @@ namespace AspNetCore.WebApi.ExceptionHandling.Controllers
         public ActionResult<IEnumerable<string>> Get()
         {
             throw new InvalidOperationException("Sorry just a joke");
-            return new string[] { "value1", "value2" };
+            return new[] { "value1", "value2" };
         }
 
         // GET api/values/5
@@ -49,7 +51,7 @@ namespace AspNetCore.WebApi.ExceptionHandling.Controllers
             using (var reader = new StreamReader(Request.Body))
             {
                 string body = reader.ReadToEnd();
-                Serilog.Log.Logger.Warning("hello:{@t}", new Hello(id, response));
+                Log.Logger.Warning("hello:{@t}", new Hello(id, response));
             }
 
             return response;
@@ -61,40 +63,68 @@ namespace AspNetCore.WebApi.ExceptionHandling.Controllers
         {
         }
 
-        [HttpPut("{aggregateId}")]
-        public async Task<OkObjectResult> Put(Guid aggregateId, MyCommand myCommand)
+        /*
+         {
+          "bidibulle": "dd",
+          "context": {
+            "author": "string",
+            "machine": "string"
+          }
+}
+        */
+
+        [HttpPut]
+        public async Task<OkObjectResult> Put(MyCommand myCommand)
         {
             await Task.FromResult(0);
-            var tryToLogThis = new {ask = myCommand, response = HttpStatusCode.OK};
+            var tryToLogThis = new { ask = myCommand, response = HttpStatusCode.OK };
             Log.Information("{@tryToLogThis}", tryToLogThis);
 
             return new OkObjectResult(tryToLogThis);
         }
-        
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
         {
         }
     }
 
     public class MyCommand
     {
-        public Guid CommandId { get; }
-        public Guid AggregateId { get; }
-        public DateTimeOffset RemoveFrom { get; }
-
-        public MyCommand(Guid commandId, Guid aggregateId, DateTimeOffset removeFrom)
+        [JsonConstructor]
+        public MyCommand(int id, DateTimeOffset removeFrom)
         {
-            CommandId = commandId;
-            AggregateId = aggregateId;
+            this.Id = id;
             RemoveFrom = removeFrom;
+        }
+
+        public Context Context { get; set; }
+
+        public int Id { get; }
+
+        public DateTimeOffset RemoveFrom { get; }
+    }
+
+    public class Context
+    {
+        public Context()
+        {
+        }
+
+        public Context(string author, string machine)
+        {
+            Author = author;
+            Machine = machine;
+        }
+
+        public string Author { get; set; }
+
+        public string Machine { get; set; }
+
+        public override string ToString()
+        {
+            return $"author = {Author} @ machine = {Machine}";
         }
     }
 }
