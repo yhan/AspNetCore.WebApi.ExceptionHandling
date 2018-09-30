@@ -8,16 +8,14 @@
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Newtonsoft.Json;
-
     using Serilog;
 
     class Hello
     {
         public Hello(int id, string content)
         {
-            Id = id;
-            Content = content;
+            this.Id = id;
+            this.Content = content;
         }
 
         public string Content { get; set; }
@@ -48,7 +46,7 @@
         public ActionResult<string> Get(int id)
         {
             var response = $"hello world-{id}";
-            using (var reader = new StreamReader(Request.Body))
+            using (var reader = new StreamReader(this.Request.Body))
             {
                 string body = reader.ReadToEnd();
                 Log.Logger.Warning("hello:{@t}", new Hello(id, response));
@@ -72,7 +70,6 @@
           }
 }
         */
-
         [HttpPut]
         public async Task<OkObjectResult> Put(MyCommand myCommand)
         {
@@ -87,44 +84,6 @@
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
-        }
-    }
-
-    public class MyCommand
-    {
-        [JsonConstructor]
-        public MyCommand(int id, DateTimeOffset removeFrom)
-        {
-            this.Id = id;
-            RemoveFrom = removeFrom;
-        }
-
-        public Context Context { get; set; }
-
-        public int Id { get; }
-
-        public DateTimeOffset RemoveFrom { get; }
-    }
-
-    public class Context
-    {
-        public Context()
-        {
-        }
-
-        public Context(string author, string machine)
-        {
-            Author = author;
-            Machine = machine;
-        }
-
-        public string Author { get; set; }
-
-        public string Machine { get; set; }
-
-        public override string ToString()
-        {
-            return $"author = {Author} @ machine = {Machine}";
         }
     }
 }

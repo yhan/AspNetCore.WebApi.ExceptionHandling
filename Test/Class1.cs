@@ -1,12 +1,13 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Test
+﻿namespace Test
 {
+    using System;
+    using System.Runtime.Remoting.Contexts;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+
+    using NUnit.Framework;
+
     [TestFixture]
     public class Class1
     {
@@ -24,6 +25,37 @@ namespace Test
             }
 
             TestContext.WriteLine($"Counter = {counter}");
+        }
+
+        [Test]
+        public void Serialize_datetimeoffset()
+        {
+            var myCommand = new MyCommand(10, DateTimeOffset.UtcNow);
+            var serializeObject = JsonConvert.SerializeObject(myCommand, new JsonSerializerSettings() { Formatting = Formatting.Indented, ContractResolver = new CamelCasePropertyNamesContractResolver() });
+
+            TestContext.WriteLine(serializeObject);
+        }
+    }
+
+
+    public class MyCommand : Command
+    {
+        [JsonConstructor]
+        public MyCommand(int id, DateTimeOffset removeFrom) : base(removeFrom)
+        {
+            this.Id = id;
+        }
+        
+        public int Id { get; }
+    }
+
+    public abstract class Command
+    {
+        public DateTimeOffset RemoveFrom { get; }
+
+        public Command(DateTimeOffset removeFrom)
+        {
+            this.RemoveFrom = removeFrom;
         }
     }
 }

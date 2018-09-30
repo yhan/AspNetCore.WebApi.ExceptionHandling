@@ -1,27 +1,28 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Serilog;
-
-namespace AspNetCore.WebApi.ExceptionHandling
+﻿namespace AspNetCore.WebApi.ExceptionHandling
 {
+    using System;
+    using System.IO;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Http;
+
+    using Serilog;
+
     public class HttpRequestResponseLoggingMiddleware
     {
-        //private static ILog _logger = LogManager.GetLogger("Http.InputsOutputs");
-
+        // private static ILog _logger = LogManager.GetLogger("Http.InputsOutputs");
         private readonly RequestDelegate _next;
 
         public HttpRequestResponseLoggingMiddleware(RequestDelegate next)
         {
-            _next = next;
+            this._next = next;
         }
 
         public async Task Invoke(HttpContext context)
         {
             var originalRequestBody = context.Request.Body;
-            Log.Information("{request}", await FormatRequest(context.Request));
+            Log.Information("{request}", await this.FormatRequest(context.Request));
 
             // formatting response
             var originalBodyStream = context.Response.Body;
@@ -30,10 +31,10 @@ namespace AspNetCore.WebApi.ExceptionHandling
             {
                 context.Response.Body = responseBody;
 
-                await _next(context);
+                await this._next(context);
 
                 context.Request.Body = originalRequestBody;
-                Log.Information("{response}", await FormatResponse(context.Response));
+                Log.Information("{response}", await this.FormatResponse(context.Response));
                 await responseBody.CopyToAsync(originalBodyStream);
             }
         }
