@@ -1,5 +1,7 @@
 ﻿namespace AspNetCore.WebApi.ExceptionHandling
 {
+    using System.Threading;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@
     using Microsoft.Extensions.Logging;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
 
     using Serilog;
 
@@ -24,10 +27,14 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogger<Startup> logger, ILoggerFactory loggerFactory)
         {
+            // Log request and response
+            app.UseMiddleware<HttpRequestResponseLoggingMiddleware>();
+
             // Handling Errors Globally with the Custom Middleware 
             app.UseMiddleware<ExceptionMiddleware>();
 
-            app.UseMiddleware<HttpRequestResponseLoggingMiddleware>();
+            //app.UseCustomUnhandledExceptionHandler("", this.Configuration, "test");
+
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 
             loggerFactory.AddDebug();
@@ -38,6 +45,8 @@
 
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "exception hadnling spike API V1"); });
         }
+
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -56,6 +65,7 @@
                             options.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Error;
                             options.SerializerSettings.Formatting = Formatting.Indented;
                             options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Populate;
+                            //options.SerializerSettings.Error += this.OnError;
                         });
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
@@ -67,5 +77,6 @@
                         swaggerGenOptions.SetDefaultOptionsWithXmlDocumentation(System.AppDomain.CurrentDomain.FriendlyName, "AM 10", "DIF-IT-LTAM10@lafrancaise-group.com", webApiDescription);
                     });
         }
+        
     }
 }

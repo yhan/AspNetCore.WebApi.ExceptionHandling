@@ -26,7 +26,7 @@
 
             // formatting response
             var originalBodyStream = context.Response.Body;
-
+            
             using (var responseBody = new MemoryStream())
             {
                 context.Response.Body = responseBody;
@@ -34,6 +34,7 @@
                 await this._next(context);
 
                 context.Request.Body = originalRequestBody;
+
                 Log.Information("{response}", await this.FormatResponse(context.Response));
                 await responseBody.CopyToAsync(originalBodyStream);
             }

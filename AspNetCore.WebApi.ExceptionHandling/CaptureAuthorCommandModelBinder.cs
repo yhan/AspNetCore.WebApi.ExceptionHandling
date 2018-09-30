@@ -1,5 +1,6 @@
 ﻿namespace AspNetCore.WebApi.ExceptionHandling
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -59,17 +60,12 @@
                     Message = $"wtf?????: {string.Join(",", modelErrors.Select(x => x.ErrorMessage))}",
                 };
 
-                var serializeObject = JsonConvert.SerializeObject(errorDetails, Formatting.Indented);
-                //await httpContext.Response.WriteAsync(serializeObject);
+                throw new Exception(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));
 
-                //var newBody = new MemoryStream(Encoding.UTF8.GetBytes(serializeObject));
-                var newBody = new MemoryStream();
+                var newBody = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(errorDetails, Formatting.Indented)));
                 var originBody = context.Response.Body;
-
                 context.Response.Body = newBody;
-
                 newBody.Seek(0, SeekOrigin.Begin);
-
                 string json = new StreamReader(newBody).ReadToEnd();
 
                 context.Response.Body = originBody;

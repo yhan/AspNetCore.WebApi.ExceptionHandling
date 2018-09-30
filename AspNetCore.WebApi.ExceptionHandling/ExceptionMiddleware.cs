@@ -48,9 +48,13 @@
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var errorDetails = new ErrorDetails { StatusCode = context.Response.StatusCode, Message = "Internal Server Error from the custom middleware.", Exception = exception };
+            var errorDetails = new ErrorDetails
+                                   {
+                                       StatusCode = context.Response.StatusCode,
+                                       Message = $"Error: {exception.Message}",
+                                       Exception = exception
+                                   };
 
-            Log.Error("{@Error}", errorDetails);
             return context.Response.WriteAsync(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));
         }
     }
