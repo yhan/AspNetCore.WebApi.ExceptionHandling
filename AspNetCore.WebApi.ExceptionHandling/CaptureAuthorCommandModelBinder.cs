@@ -57,18 +57,19 @@
                 var errorDetails = new ErrorDetails
                 {
                     StatusCode = context.Response.StatusCode,
-                    Message = $"wtf?????: {string.Join(",", modelErrors.Select(x => x.ErrorMessage))}",
+                    Message = $"Model binding fatal error: {string.Join(",", modelErrors.Select(x => x.ErrorMessage))}"
                 };
-
+              
                 throw new Exception(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));
 
-                var newBody = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(errorDetails, Formatting.Indented)));
-                var originBody = context.Response.Body;
-                context.Response.Body = newBody;
-                newBody.Seek(0, SeekOrigin.Begin);
-                string json = new StreamReader(newBody).ReadToEnd();
 
-                context.Response.Body = originBody;
+                //var newBody = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(errorDetails, Formatting.Indented)));
+                //var originBody = context.Response.Body;
+                //context.Response.Body = newBody;
+                //newBody.Seek(0, SeekOrigin.Begin);
+                //string json = new StreamReader(newBody).ReadToEnd();
+
+                //context.Response.Body = originBody;
 
             }
         }
